@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from db import get_connection
-from models import OpportunityCreate
+from models import OpportunityCreate, OpportunityUpdate
 
 app = FastAPI(title="Research Opportunity Portal API")
 
@@ -91,3 +91,58 @@ def get_opportunity(opp_id: int):
     if row is None:
         raise HTTPException(status_code=404, detail="Opportunity not found")
     return row
+
+
+@app.put("/api/opportunities/{opp_id}")
+def update_opportunity(opp_id: int, opp: OpportunityUpdate):
+    fields = opp.model_dump(exclude_none=True)
+    if not fields:
+        raise HTTPException(status_code=400, detail="No fields provided to update")
+
+    conn = None
+    row = None
+    not_found = False
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id FROM opportunities WHERE id = %s", (opp_id,))
+        if cursor.fetchone() is None:
+            not_found = True
+        else:
+            set_clause = ", ".join(f"{col} = %s" for col in fields)
+            cursor.execute(
+                f"UPDATE opportunities SET {set_clause} WHERE id = %s",
+                (*fields.values(), opp_id),
+            )
+            conn.commit()
+            cursor.execute("SELECT * FROM opportunities WHERE id = %s", (opp_id,))
+            row = cursor.fetchone()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+    if not_found:
+        raise HTTPException(status_code=404, detail="Opportunity not found")
+    return row
+
+
+@app.delete("/api/opportunities/{opp_id}")
+def delete_opportunity(opp_id: int):
+    conn = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM opportunities WHERE id = %s", (opp_id,))
+        conn.commit()
+        deleted = cursor.rowcount
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+    if deleted == 0:
+        raise HTTPException(status_code=404, detail="Opportunity not found")
+    return {"message": f"Opportunity {opp_id} deleted successfully"}
