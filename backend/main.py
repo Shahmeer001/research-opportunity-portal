@@ -1,11 +1,19 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import get_connection
 from models import OpportunityCreate, OpportunityUpdate
 
 app = FastAPI(title="Research Opportunity Portal API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # The assignment wants 400 for bad input, but FastAPI defaults to 422
