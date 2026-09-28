@@ -1,13 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchOpportunities } from "./api";
+import { createOpportunity, updateOpportunity } from "./opportunityApi";
 import OpportunityCard from "./components/OpportunityCard";
 import DetailsModal from "./components/DetailsModal";
+import OpportunityForm from "./components/OpportunityForm";
 
 export default function App() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+
+  // Create / edit form: null | "new" | an opportunity object
+  const [editing, setEditing] = useState(null);
+  // Success message shown after create / update
+  const [notice, setNotice] = useState(null);
 
   // Filters & Search
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +54,19 @@ export default function App() {
     };
   }, []);
 
+  // Called by the form. If this throws, the form shows the error itself.
+  const handleSave = async (payload) => {
+    if (editing === "new") {
+      await createOpportunity(payload);
+      setNotice("Opportunity created successfully.");
+    } else {
+      await updateOpportunity(editing.id, payload);
+      setNotice("Opportunity updated successfully.");
+    }
+    setEditing(null);
+    loadOpportunities();
+  };
+
   // Unique research areas for filter dropdown
   const uniqueAreas = useMemo(() => {
     const areas = opportunities.map((opp) => opp.research_area).filter(Boolean);
@@ -82,14 +102,32 @@ export default function App() {
           <span className="navbar-brand fw-bold fs-4">
             🎓 Research Opportunity Portal
           </span>
-          <span className="navbar-text text-light-50 small">
-            Connecting Students with Faculty Research
-          </span>
+          <button
+            className="btn btn-primary"
+            onClick={() => setEditing("new")}
+          >
+            + New Opportunity
+          </button>
         </div>
       </nav>
 
       {/* Main Container */}
       <div className="container py-4">
+        {/* Success message */}
+        {notice && (
+          <div
+            className="alert alert-success alert-dismissible shadow-sm"
+            role="alert"
+          >
+            {notice}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setNotice(null)}
+            />
+          </div>
+        )}
+
         {/* Controls / Filter Bar */}
         <div className="card shadow-sm border-0 mb-4 rounded-3">
           <div className="card-body p-3">
@@ -197,6 +235,12 @@ export default function App() {
                       opportunity={opp}
                       onViewDetails={(item) => setSelectedOpportunity(item)}
                     />
+                    <button
+                      className="btn btn-sm btn-outline-secondary w-100 mt-2"
+                      onClick={() => setEditing(opp)}
+                    >
+                      Edit
+                    </button>
                   </div>
                 ))}
               </div>
@@ -210,6 +254,15 @@ export default function App() {
         <DetailsModal
           opportunity={selectedOpportunity}
           onClose={() => setSelectedOpportunity(null)}
+        />
+      )}
+
+      {/* Create / Edit Form */}
+      {editing && (
+        <OpportunityForm
+          initial={editing === "new" ? null : editing}
+          onSubmit={handleSave}
+          onClose={() => setEditing(null)}
         />
       )}
     </div>
