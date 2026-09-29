@@ -1,9 +1,11 @@
 from datetime import date
 from typing import Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class OpportunityCreate(BaseModel):
+    
+    model_config = ConfigDict(str_strip_whitespace=True)
     title: str = Field(..., min_length=1, max_length=255)
     description: str = Field(..., min_length=1)
     research_area: str = Field(..., min_length=1, max_length=100)
@@ -15,6 +17,8 @@ class OpportunityCreate(BaseModel):
     status: Literal["Open", "Closed"] = "Open"
 
 class OpportunityUpdate(BaseModel):
+
+    model_config = ConfigDict(str_strip_whitespace=True)
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, min_length=1)
     research_area: Optional[str] = Field(None, min_length=1, max_length=100)

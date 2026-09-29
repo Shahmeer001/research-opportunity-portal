@@ -33,12 +33,15 @@ def root():
 
 @app.get("/health")
 def health_check():
+    conn = None
     try:
         conn = get_connection()
-        conn.close()
         return {"status": "ok", "db": "connected"}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+    finally:
+        if conn:
+            conn.close()
 
 
 @app.post("/api/opportunities", status_code=201)
