@@ -1,0 +1,307 @@
+:root, [data-theme="light"] {
+  --color-bg: #FAF7F2;
+  --color-surface: #FFFFFF;
+  --color-text: #2B2420;
+  --color-text-muted: #7A7168;
+  --color-accent: #C1622D;
+  --color-accent-hover: #A34F22;
+  --color-border: #E8E0D5;
+  --color-open: #6B8F5E;
+  --color-closed: #A39A8F;
+  --color-danger: #B8452F;
+  --color-warning: #C89A3E;
+  --nav-bg: #2B2420;
+  --nav-text: #FAF7F2;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --input-bg: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0C1222;
+  --color-surface: #151E32;
+  --color-text: #F1F5F9;
+  --color-text-muted: #94A3B8;
+  --color-accent: #3B82F6;
+  --color-accent-hover: #2563EB;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-open: #10B981;
+  --color-closed: #64748B;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --nav-bg: #151E32;
+  --nav-text: #F1F5F9;
+  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  --input-bg: #111A2D;
+}
+
+/* Global Transitions for Smooth Day/Night Switch */
+body, .card, .modal-content, .sheet-content, nav.navbar, .form-control, .form-select, .tilt-card {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 1. Page/body background */
+body {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+}
+
+.bg-light {
+  background-color: var(--color-bg) !important;
+}
+
+.bg-white {
+  background-color: var(--color-surface) !important;
+}
+
+/* 2. Navbar */
+.navbar-custom, nav.navbar {
+  background-color: var(--nav-bg) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.navbar .navbar-brand, .navbar .navbar-text {
+  color: var(--nav-text) !important;
+}
+
+/* 3. Cards & Modals */
+.card, .modal-content, .sheet-content {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.tilt-card {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-left-width: 5px !important;
+  box-shadow: var(--card-shadow);
+}
+
+.tilt-card.status-open {
+  border-left-color: var(--color-open) !important;
+}
+
+.tilt-card.status-closed {
+  border-left-color: var(--color-closed) !important;
+}
+
+/* 4. Headings and primary text */
+h1, h2, h3, h4, h5, h6, .card-title, .modal-title {
+  color: var(--color-text) !important;
+}
+
+.text-dark {
+  color: var(--color-text) !important;
+}
+
+/* 5. Secondary/muted text */
+.text-muted, .card-subtitle, .form-label {
+  color: var(--color-text-muted) !important;
+}
+
+.text-secondary {
+  color: var(--color-text-muted) !important;
+}
+
+/* 6. Primary buttons (Save, + New Opportunity, View, Edit) */
+.btn-primary {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: var(--color-accent-hover) !important;
+  border-color: var(--color-accent-hover) !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary {
+  color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--color-border) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+/* 7. Status badges */
+.badge.bg-success, .badge.bg-success-subtle, .badge-open {
+  background-color: var(--color-open) !important;
+  color: #ffffff !important;
+  border-color: var(--color-open) !important;
+}
+
+.badge.bg-secondary, .badge.bg-secondary-subtle, .badge-closed {
+  background-color: var(--color-closed) !important;
+  color: #ffffff !important;
+  border-color: var(--color-closed) !important;
+}
+
+.badge.bg-primary-subtle {
+  background-color: rgba(193, 98, 45, 0.12) !important;
+  color: var(--color-accent) !important;
+  border-color: rgba(193, 98, 45, 0.25) !important;
+}
+
+[data-theme="dark"] .badge.bg-primary-subtle {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #93C5FD !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.badge.bg-light {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* 8. Danger elements (Delete, errors) */
+.btn-outline-danger {
+  color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-danger:hover, .btn-outline-danger:active {
+  background-color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  color: #ffffff !important;
+}
+
+.alert-danger {
+  background-color: rgba(184, 69, 47, 0.1) !important;
+  border-color: var(--color-danger) !important;
+  color: var(--color-danger) !important;
+}
+
+.inline-field-error, .text-danger {
+  color: var(--color-danger) !important;
+}
+
+/* 9. Warning elements */
+.alert-warning {
+  background-color: rgba(200, 154, 62, 0.1) !important;
+  border-color: var(--color-warning) !important;
+  color: var(--color-warning) !important;
+}
+
+/* 10. Borders & Form controls */
+hr {
+  border-color: var(--color-border) !important;
+  opacity: 1 !important;
+}
+
+.border, .border-top, .border-bottom {
+  border-color: var(--color-border) !important;
+}
+
+.form-control, .form-select {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.form-control::placeholder {
+  color: var(--color-text-muted) !important;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: var(--input-bg) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px rgba(193, 98, 45, 0.2) !important;
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+.form-select option {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.modal-header, .modal-footer {
+  border-color: var(--color-border) !important;
+}
+
+.delete-popover {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.delete-popover-arrow {
+  border-top-color: var(--color-surface) !important;
+}
+
+.academic-toast {
+  background: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.academic-toast.toast-success {
+  border-left: 4px solid var(--color-open) !important;
+}
+
+.academic-toast.toast-danger {
+  border-left: 4px solid var(--color-danger) !important;
+}
+
+.academic-toast.toast-warning {
+  border-left: 4px solid var(--color-warning) !important;
+}
+
+.ios-switch-track.active {
+  background-color: var(--color-open) !important;
+}
+
+.ios-switch-track {
+  background-color: var(--color-closed) !important;
+}
+
+.btn-close {
+  filter: none !important;
+}
+
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
+/* Theme Toggle Button Style */
+.theme-toggle-btn {
+  background: transparent;
+  color: var(--nav-text) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  padding: 0.375rem 0.85rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}

@@ -20,6 +20,20 @@ export default function App() {
   // Message after an action: { text, type } where type is success | danger | warning
   const [notice, setNotice] = useState(null);
 
+  // Day/Night theme toggle with localStorage persistence
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("portal_theme") || "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("portal_theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   // Filters & Search
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -132,17 +146,26 @@ export default function App() {
   return (
     <div className="min-vh-100 bg-light">
       {/* Header / Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+      <nav className="navbar navbar-expand-lg navbar-custom shadow-sm">
         <div className="container">
           <span className="navbar-brand fw-bold fs-4">
             🎓 Research Opportunity Portal
           </span>
-          <button
-            className="btn btn-primary"
-            onClick={() => setEditing("new")}
-          >
-            + New Opportunity
-          </button>
+          <div className="d-flex align-items-center gap-2">
+            <button
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              title={`Switch to ${theme === "light" ? "Night" : "Day"} mode`}
+            >
+              {theme === "light" ? "🌙 Night" : "☀️ Day"}
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => setEditing("new")}
+            >
+              + New Opportunity
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -265,34 +288,14 @@ export default function App() {
             ) : (
               <div className="row g-4">
                 {filteredOpportunities.map((opp) => (
-                  <div key={opp.id} className="col-md-6 col-lg-4">
+                  <div key={opp.id} className="col-md-6 col-lg-4 d-flex">
                     <OpportunityCard
                       opportunity={opp}
                       onViewDetails={(item) => setSelectedOpportunity(item)}
+                      onEdit={(item) => setEditing(item)}
+                      onToggleStatus={(item) => handleToggleStatus(item)}
+                      onDelete={(item) => handleDelete(item)}
                     />
-                    <div className="d-flex gap-2 mt-2">
-                      <button
-                        className="btn btn-sm btn-outline-secondary flex-fill"
-                        onClick={() => setEditing(opp)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className={`btn btn-sm flex-fill ${opp.status === "Open"
-                            ? "btn-outline-warning"
-                            : "btn-outline-success"
-                          }`}
-                        onClick={() => handleToggleStatus(opp)}
-                      >
-                        {opp.status === "Open" ? "Close" : "Reopen"}
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-danger flex-fill"
-                        onClick={() => handleDelete(opp)}
-                      >
-                        Delete
-                      </button>
-                    </div>
                   </div>
                 ))}
               </div>

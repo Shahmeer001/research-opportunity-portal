@@ -187,7 +187,7 @@ export default function OpportunityForm({ initial, onSubmit, onClose }) {
                             </div>
 
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={onClose}>
+                                <button type="button" className="btn btn-outline-secondary" onClick={onClose}>
                                     Cancel
                                 </button>
                                 <button type="submit" className="btn btn-primary" disabled={saving}>

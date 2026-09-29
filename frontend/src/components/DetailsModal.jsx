@@ -45,15 +45,22 @@ export default function DetailsModal({ opportunity, onClose }) {
           <div className="modal-content shadow border-0 rounded-3">
             <div className="modal-header border-bottom-0 pb-0">
               <div className="d-flex align-items-center gap-2">
-                <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+                <span
+                  className="badge border px-2 py-1"
+                  style={{
+                    backgroundColor: "rgba(193, 98, 45, 0.12)",
+                    color: "var(--color-accent)",
+                    borderColor: "rgba(193, 98, 45, 0.25)",
+                  }}
+                >
                   {research_area}
                 </span>
                 <span
-                  className={`badge ${
-                    isOpen
-                      ? "bg-success-subtle text-success border border-success-subtle"
-                      : "bg-secondary-subtle text-secondary border border-secondary-subtle"
-                  }`}
+                  className="badge px-2 py-1"
+                  style={{
+                    backgroundColor: isOpen ? "var(--color-open)" : "var(--color-closed)",
+                    color: "#ffffff",
+                  }}
                 >
                   {status}
                 </span>
@@ -95,7 +102,12 @@ export default function DetailsModal({ opportunity, onClose }) {
                     {required_skills.split(",").map((skill, index) => (
                       <span
                         key={index}
-                        className="badge bg-secondary-subtle text-secondary border px-2 py-1"
+                        className="badge px-2 py-1"
+                        style={{
+                          backgroundColor: "var(--color-bg)",
+                          color: "var(--color-text)",
+                          border: "1px solid var(--color-border)",
+                        }}
                       >
                         {skill.trim()}
                       </span>
@@ -108,7 +120,7 @@ export default function DetailsModal({ opportunity, onClose }) {
             <div className="modal-footer border-top-0 pt-0">
               <button
                 type="button"
-                className="btn btn-secondary px-4 rounded-2"
+                className="btn btn-outline-secondary px-4 rounded-2"
                 onClick={onClose}
               >
                 Close
