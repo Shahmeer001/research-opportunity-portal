@@ -1,4 +1,5 @@
 const BASE = "http://127.0.0.1:8000/api/opportunities";
+export const deleteOpportunity = (id) => request(`/${id}`, { method: "DELETE" });
 
 export class ApiError extends Error {
     constructor(status, message, errors = []) {

@@ -1,6 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchOpportunities } from "./api";
-import { createOpportunity, updateOpportunity } from "./opportunityApi";
+import {
+  createOpportunity,
+  updateOpportunity,
+  deleteOpportunity,
+} from "./opportunityApi";
 import OpportunityCard from "./components/OpportunityCard";
 import DetailsModal from "./components/DetailsModal";
 import OpportunityForm from "./components/OpportunityForm";
@@ -13,7 +17,7 @@ export default function App() {
 
   // Create / edit form: null | "new" | an opportunity object
   const [editing, setEditing] = useState(null);
-  // Success message shown after create / update
+  // Message after an action: { text, type } where type is success | danger | warning
   const [notice, setNotice] = useState(null);
 
   // Filters & Search
@@ -54,16 +58,47 @@ export default function App() {
     };
   }, []);
 
+  // Turns an API error into a message for the notice bar
+  const reportFailure = (err, action) => {
+    if (err.status === 404) {
+      setNotice({ text: "That opportunity no longer exists.", type: "warning" });
+    } else {
+      setNotice({ text: `Could not ${action}: ${err.message}`, type: "danger" });
+    }
+  };
+
   // Called by the form. If this throws, the form shows the error itself.
   const handleSave = async (payload) => {
     if (editing === "new") {
       await createOpportunity(payload);
-      setNotice("Opportunity created successfully.");
+      setNotice({ text: "Opportunity created successfully.", type: "success" });
     } else {
       await updateOpportunity(editing.id, payload);
-      setNotice("Opportunity updated successfully.");
+      setNotice({ text: "Opportunity updated successfully.", type: "success" });
     }
     setEditing(null);
+    loadOpportunities();
+  };
+
+  const handleToggleStatus = async (opp) => {
+    const next = opp.status === "Open" ? "Closed" : "Open";
+    try {
+      await updateOpportunity(opp.id, { status: next });
+      setNotice({ text: `Opportunity marked as ${next}.`, type: "success" });
+    } catch (err) {
+      reportFailure(err, "update the status");
+    }
+    loadOpportunities();
+  };
+
+  const handleDelete = async (opp) => {
+    if (!window.confirm(`Delete "${opp.title}"? This cannot be undone.`)) return;
+    try {
+      await deleteOpportunity(opp.id);
+      setNotice({ text: "Opportunity deleted successfully.", type: "success" });
+    } catch (err) {
+      reportFailure(err, "delete the opportunity");
+    }
     loadOpportunities();
   };
 
@@ -113,13 +148,13 @@ export default function App() {
 
       {/* Main Container */}
       <div className="container py-4">
-        {/* Success message */}
+        {/* Success / error message for actions */}
         {notice && (
           <div
-            className="alert alert-success alert-dismissible shadow-sm"
+            className={`alert alert-${notice.type} alert-dismissible shadow-sm`}
             role="alert"
           >
-            {notice}
+            {notice.text}
             <button
               type="button"
               className="btn-close"
@@ -235,12 +270,29 @@ export default function App() {
                       opportunity={opp}
                       onViewDetails={(item) => setSelectedOpportunity(item)}
                     />
-                    <button
-                      className="btn btn-sm btn-outline-secondary w-100 mt-2"
-                      onClick={() => setEditing(opp)}
-                    >
-                      Edit
-                    </button>
+                    <div className="d-flex gap-2 mt-2">
+                      <button
+                        className="btn btn-sm btn-outline-secondary flex-fill"
+                        onClick={() => setEditing(opp)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={`btn btn-sm flex-fill ${opp.status === "Open"
+                            ? "btn-outline-warning"
+                            : "btn-outline-success"
+                          }`}
+                        onClick={() => handleToggleStatus(opp)}
+                      >
+                        {opp.status === "Open" ? "Close" : "Reopen"}
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-danger flex-fill"
+                        onClick={() => handleDelete(opp)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
